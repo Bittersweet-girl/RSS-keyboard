@@ -87,7 +87,7 @@ document.body.append(keyboard);
 }
 createKeyboard();
 
-
+let isCaps = false;
 const keys = document.querySelectorAll(".button-style");
 
 window.addEventListener("keydown", (e) => {
@@ -133,6 +133,8 @@ window.addEventListener("keydown", (e) => {
         if (key.innerHTML === 'CapsLK<span class="light"></span>') {
           key.classList.add("button-press");
           key.classList.toggle("capsLock-on");
+          !isCaps ? (isCaps = true) : (isCaps = false);
+          toCapitalize();
         }
         break;
     }
@@ -148,4 +150,18 @@ window.addEventListener("keyup", () => {
       key.classList.remove("button-press");
     }
   })
-})
+});
+
+function toCapitalize() {
+  let symbols = document.querySelectorAll(".button");
+  symbols.forEach((el) => {
+    let symb = el.innerHTML;
+    if (isCaps) {
+      el.innerHTML = "";
+      el.innerHTML = symb.toUpperCase();
+    } else {
+      el.innerHTML = "";
+      el.innerHTML = symb.toLowerCase();
+    }
+  });
+}
