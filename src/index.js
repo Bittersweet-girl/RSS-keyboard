@@ -19,24 +19,27 @@ const keysArray = {
     ["Ctrl", "Win", "Alt", " ", "Ctrl", "Alt", "&leftarrow;", "&downarrow;", "&rightarrow;"]
   ],
   ru: [
-    ["`", "1", "2", "3", "4", "5", "6", "7", "8", "9", "0", "-", "=", "BackSP"],
+    ["ё", "1", "2", "3", "4", "5", "6", "7", "8", "9", "0", "-", "=", "BackSP"],
     ["Tab", "й", "ц", "у", "к", "е", "н", "г", "ш", "щ", "з", "х", "ъ", "/"],
     ["CapsLK", "ф", "ы", "в", "а", "п", "р", "о", "л", "д", "ж", "э", "Enter"],
-    ["Shift", "я", "ч", "с", "м", "и", "т", "ь", "б", "ю", "ё", ".", "&uparrow;", "Shift"],
+    ["Shift", "я", "ч", "с", "м", "и", "т", "ь", "б", "ю", ".", "&uparrow;", "Shift"],
     ["Ctrl", "Win", "Alt", " ", "Ctrl", "Alt", "&leftarrow;", "&downarrow;", "&rightarrow;"]
   ],
 };
-function createKeyboard() {
+let changeLang = "en";
+
+
+function createKeyboard(lang) {
   const keyboard = document.createElement("div");
   keyboard.className = "keyboard";
-  for (let j = 0; j < keysArray.en.length; j++){
+  for (let j = 0; j < keysArray[lang].length; j++){
     const line = document.createElement("div");
     line.className = `line-${j} line`;
     keyboard.append(line);
-    for (let i = 0; i < keysArray.en[j].length; i++){
+    for (let i = 0; i < keysArray[lang][j].length; i++){
       const btn = document.createElement("span");
-      btn.innerHTML = keysArray.en[j][i];
-      switch (keysArray.en[j][i]) {
+      btn.innerHTML = keysArray[lang][j][i];
+      switch (keysArray[lang][j][i]) {
         case "BackSP":
           btn.className = "button-style backspace";
           break;
@@ -80,12 +83,13 @@ function createKeyboard() {
         default:
           btn.className = "button-style button";
       }
+      // keys.push(btn);
       line.append(btn);
     }
-}
+  }
 document.body.append(keyboard);
 }
-createKeyboard();
+createKeyboard(changeLang);
 
 let isCaps = false;
 const keys = document.querySelectorAll(".button-style");
@@ -107,26 +111,31 @@ window.addEventListener("keydown", (e) => {
       case "Backspace":
         if (key.innerHTML === "BackSP") {
           key.classList.add("button-press");
+          inputText(key.innerHTML);
         }
         break;
       case "ArrowUp":
         if (key.innerHTML === "↑") {
           key.classList.add("button-press");
+          inputText(key.innerHTML);
         }
         break;
       case "ArrowLeft":
         if (key.innerHTML === "←") {
           key.classList.add("button-press");
+          inputText(key.innerHTML);
         }
         break;
       case "ArrowDown":
         if (key.innerHTML === "↓") {
           key.classList.add("button-press");
+          inputText(key.innerHTML);
         }
         break;
       case "ArrowRight":
         if (key.innerHTML === "→") {
           key.classList.add("button-press");
+          inputText(key.innerHTML);
         }
         break;
       case "CapsLock":
@@ -137,11 +146,22 @@ window.addEventListener("keydown", (e) => {
           toCapitalize();
         }
         break;
+      case "Tab":
+        if (key.innerHTML === "Tab") {
+          inputText(key.innerHTML);
+        }
+        break;
     }
     if (key.innerHTML === codeName) {
       key.classList.add("button-press");
+      inputText(key.innerHTML);
     }
   });
+  if (e.ctrlKey && e.shiftKey) {
+    changeLang == "en" ? changeLang = "ru" : changeLang = "en";
+    console.log(changeLang);
+    createKeyboard(changeLang);
+  }
 });
 
 window.addEventListener("keyup", () => {
@@ -149,7 +169,7 @@ window.addEventListener("keyup", () => {
     if (key.classList.contains("button-press")) {
       key.classList.remove("button-press");
     }
-  })
+  });
 });
 
 function toCapitalize() {
@@ -164,4 +184,46 @@ function toCapitalize() {
       el.innerHTML = symb.toLowerCase();
     }
   });
+}
+keys.forEach((el) => {
+  el.addEventListener("click", (e) => {
+    let currentSymb = e.target.innerHTML;
+    inputText(currentSymb);
+  });
+});
+  
+function inputText(symb) {
+  const area = document.querySelector(".display-textarea");
+  switch (symb) {
+    case "Ctrl":
+      break;
+    case "Win":
+      break;
+    case "Alt":
+      break;
+    case 'CapsLK<span class="light"></span>':
+      keys.forEach((key) => {
+        if (key.innerHTML === 'CapsLK<span class="light"></span>') {
+          key.classList.toggle("capsLock-on");
+          !isCaps ? (isCaps = true) : (isCaps = false);
+          toCapitalize();
+        }
+      });
+      break;
+    case "Shift":
+      break;
+    case "Tab":
+      area.innerHTML += "   ";
+      break;
+    case "BackSP":
+      let someText = area.innerHTML.slice(0, -1);
+      area.innerHTML = someText;
+      break;
+    case "Enter":
+      area.innerHTML += "\n";
+      break;
+    default:
+      area.innerHTML += symb;
+      break;
+  }
 }
