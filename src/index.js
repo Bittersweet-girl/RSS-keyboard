@@ -92,7 +92,6 @@ const keys = document.querySelectorAll(".button-style");
 
 window.addEventListener("keydown", (e) => {
   let codeName = e.key; 
-  console.log(codeName);
   keys.forEach((key) => {
     switch (codeName) {
       case "Control":
@@ -111,28 +110,29 @@ window.addEventListener("keydown", (e) => {
         }
         break;
       case "ArrowUp":
-        if (key.innerHTML === "&uparrow;") {
+        if (key.innerHTML === "↑") {
           key.classList.add("button-press");
         }
         break;
       case "ArrowLeft":
-        if (key.innerHTML === "&leftarrow;") {
+        if (key.innerHTML === "←") {
           key.classList.add("button-press");
         }
         break;
       case "ArrowDown":
-        if (key.innerHTML === "&downarrow;") {
+        if (key.innerHTML === "↓") {
           key.classList.add("button-press");
         }
         break;
       case "ArrowRight":
-        if (key.innerHTML === "&rightarrow;") {
+        if (key.innerHTML === "→") {
           key.classList.add("button-press");
         }
         break;
       case "CapsLock":
-        if (key.innerHTML === "CapsLK") {
+        if (key.innerHTML === 'CapsLK<span class="light"></span>') {
           key.classList.add("button-press");
+          key.classList.toggle("capsLock-on");
         }
         break;
     }
