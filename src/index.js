@@ -117,103 +117,110 @@ function getLocalStorage() {
     const lang = localStorage.getItem("lang");
     createKeyboard(lang);
     keysListener();
+    buttonListener();
   }
 }
 window.addEventListener("load", getLocalStorage);
 
-window.addEventListener("keydown", (e) => {
-  let codeName = e.key; 
-  keys.forEach((key) => {
-    switch (codeName) {
-      case "Control":
-        if (key.innerHTML === "Ctrl") {
-          key.classList.add("button-press");
-        }
-        break;
-      case "Meta":
-        if (key.innerHTML === "Win") {
-          key.classList.add("button-press");
-        }
-        break;
-      case "Backspace":
-        if (key.innerHTML === "BackSP") {
-          key.classList.add("button-press");
-          inputText(key.innerHTML);
-        }
-        break;
-      case "ArrowUp":
-        if (key.innerHTML === "↑") {
-          key.classList.add("button-press");
-          inputText(key.innerHTML);
-        }
-        break;
-      case "ArrowLeft":
-        if (key.innerHTML === "←") {
-          key.classList.add("button-press");
-          inputText(key.innerHTML);
-        }
-        break;
-      case "ArrowDown":
-        if (key.innerHTML === "↓") {
-          key.classList.add("button-press");
-          inputText(key.innerHTML);
-        }
-        break;
-      case "ArrowRight":
-        if (key.innerHTML === "→") {
-          key.classList.add("button-press");
-          inputText(key.innerHTML);
-        }
-        break;
-      case "CapsLock":
-        if (key.innerHTML === 'CapsLK<span class="light"></span>') {
-          key.classList.add("button-press");
-          key.classList.toggle("capsLock-on");
-          !isCaps ? (isCaps = true) : (isCaps = false);
-          toCapitalize();
-        }
-        break;
-      case "Tab":
-        if (key.innerHTML === "Tab") {
-          inputText(key.innerHTML);
-        }
-        break;
-      case "Shift":
-        if (key.innerHTML === "Shift") {
-          key.classList.add("button-press");
-          shiftPress();
-        }
-        break;
+function buttonListener() {
+  window.addEventListener("keydown", (e) => {
+    let codeName = e.key; 
+    keys.forEach((key) => {
+      switch (codeName) {
+        case "Control":
+          if (key.innerHTML === "Ctrl") {
+            key.classList.add("button-press");
+          }
+          break;
+        case "Meta":
+          if (key.innerHTML === "Win") {
+            key.classList.add("button-press");
+          }
+          break;
+        case "Backspace":
+          if (key.innerHTML === "BackSP") {
+            key.classList.add("button-press");
+            inputText(key.innerHTML);
+          }
+          break;
+        case "ArrowUp":
+          if (key.innerHTML === "↑") {
+            key.classList.add("button-press");
+            inputText(key.innerHTML);
+          }
+          break;
+        case "ArrowLeft":
+          if (key.innerHTML === "←") {
+            key.classList.add("button-press");
+            inputText(key.innerHTML);
+          }
+          break;
+        case "ArrowDown":
+          if (key.innerHTML === "↓") {
+            key.classList.add("button-press");
+            inputText(key.innerHTML);
+          }
+          break;
+        case "ArrowRight":
+          if (key.innerHTML === "→") {
+            key.classList.add("button-press");
+            inputText(key.innerHTML);
+          }
+          break;
+        case "CapsLock":
+          if (key.innerHTML === 'CapsLK<span class="light"></span>') {
+            key.classList.add("button-press");
+            key.classList.toggle("capsLock-on");
+            !isCaps ? (isCaps = true) : (isCaps = false);
+            toCapitalize();
+          }
+          break;
+        case "Tab":
+          if (key.innerHTML === "Tab") {
+            inputText(key.innerHTML);
+          }
+          break;
+        case "Shift":
+          if (key.innerHTML === "Shift") {
+            key.classList.add("button-press");
+            shiftPress();
+          }
+          break;
+      }
+      if (key.innerHTML === codeName) {
+        key.classList.add("button-press");
+        inputText(key.innerHTML);
+      }
+    });
+    if (e.ctrlKey && e.shiftKey) {
+      changeLang == "en" ? changeLang = "ru" : changeLang = "en";
+      localStorage.setItem("lang", changeLang);
+      keyboard.innerHTML = "";
+      createKeyboard(changeLang);
+      keys = document.querySelectorAll(".button-style");
+      keysListener();
     }
-    if (key.innerHTML === codeName) {
-      key.classList.add("button-press");
-      inputText(key.innerHTML);
+
+  });
+
+  window.addEventListener("keyup", (e) => {
+    keys.forEach((key) => {
+      if (key.classList.contains("button-press")) {
+        if (key.innerHTML !== "Shift") {
+          key.classList.remove("button-press");
+        }
+      }
+    });
+    if (e.key === "Shift") {
+      keyboard.innerHTML = "";
+      createKeyboard(changeLang);
+      keys = document.querySelectorAll(".button-style");
+      isCaps = false;
+      keysListener();
     }
   });
-  if (e.ctrlKey && e.shiftKey) {
-    changeLang == "en" ? changeLang = "ru" : changeLang = "en";
-    localStorage.setItem("lang", changeLang);
-    keyboard.innerHTML = "";
-    createKeyboard(changeLang);
-    keys = document.querySelectorAll(".button-style");
-    keysListener();
-  }
+}
 
-});
-
-window.addEventListener("keyup", (e) => {
-  keys.forEach((key) => {
-    if (key.classList.contains("button-press")) {
-      key.classList.remove("button-press");
-    }
-  });
-  if (e.key === "Shift") {
-    keyboard.innerHTML = "";
-    createKeyboard(changeLang);
-    keys = document.querySelectorAll(".button-style");
-    keysListener();
-  }
-});
 
 function toCapitalize() {
   let symbols = document.querySelectorAll(".button");
@@ -296,11 +303,23 @@ function shiftPress() {
     keyboard.innerHTML = "";
     createKeyboard("enShift");
     keys = document.querySelectorAll(".button-style");
+    keys.forEach((key) => {
+      if (key.innerHTML === "Shift") {
+        key.classList.add("button-press");
+      }
+    });
+    isCaps = true;
     keysListener();
   } else {
     keyboard.innerHTML = "";
     createKeyboard("ruShift");
     keys = document.querySelectorAll(".button-style");
+    keys.forEach((key) => {
+      if (key.innerHTML === "Shift") {
+        key.classList.add("button-press");
+      }
+    });
+    isCaps = true;
     keysListener();
   }
 }
