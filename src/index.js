@@ -26,12 +26,12 @@ const keysArray = {
     ["Ctrl", "Win", "Alt", " ", "Ctrl", "Alt", "&leftarrow;", "&downarrow;", "&rightarrow;"]
   ],
 };
+
 let changeLang = "en";
-
-
+const keyboard = document.createElement("div");
+keyboard.className = "keyboard";
+  
 function createKeyboard(lang) {
-  const keyboard = document.createElement("div");
-  keyboard.className = "keyboard";
   for (let j = 0; j < keysArray[lang].length; j++){
     const line = document.createElement("div");
     line.className = `line-${j} line`;
@@ -83,16 +83,15 @@ function createKeyboard(lang) {
         default:
           btn.className = "button-style button";
       }
-      // keys.push(btn);
       line.append(btn);
     }
   }
-document.body.append(keyboard);
+  document.body.append(keyboard);
 }
 createKeyboard(changeLang);
 
 let isCaps = false;
-const keys = document.querySelectorAll(".button-style");
+let keys = document.querySelectorAll(".button-style");
 
 window.addEventListener("keydown", (e) => {
   let codeName = e.key; 
@@ -159,8 +158,10 @@ window.addEventListener("keydown", (e) => {
   });
   if (e.ctrlKey && e.shiftKey) {
     changeLang == "en" ? changeLang = "ru" : changeLang = "en";
-    console.log(changeLang);
+    keyboard.innerHTML = "";
     createKeyboard(changeLang);
+    keys = document.querySelectorAll(".button-style");
+    keysListener();
   }
 });
 
@@ -185,12 +186,16 @@ function toCapitalize() {
     }
   });
 }
-keys.forEach((el) => {
+function keysListener() {
+  keys.forEach((el) => {
   el.addEventListener("click", (e) => {
     let currentSymb = e.target.innerHTML;
     inputText(currentSymb);
   });
 });
+}
+keysListener();
+
   
 function inputText(symb) {
   const area = document.querySelector(".display-textarea");
