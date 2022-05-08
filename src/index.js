@@ -18,11 +18,25 @@ const keysArray = {
     ["Shift", "z", "x", "c", "v", "b", "n", "m", ",", ".", "/", "&uparrow;", "Shift"],
     ["Ctrl", "Win", "Alt", " ", "Ctrl", "Alt", "&leftarrow;", "&downarrow;", "&rightarrow;"]
   ],
+  enShift: [
+    ["~", "!", "@", "#", "$", "%", "^", "&", "*", "(", ")", "_", "+", "BackSP"],
+    ["Tab", "Q", "W", "E", "R", "T", "Y", "U", "I", "O", "P", "{", "}", "|"],
+    ["CapsLK", "A", "S", "D", "F", "G", "H", "J", "K", "L", ":", '"', "Enter"],
+    ["Shift", "Z", "X", "C", "V", "B", "N", "M", "<", ">", "?", "&uparrow;", "Shift"],
+    ["Ctrl", "Win", "Alt", " ", "Ctrl", "Alt", "&leftarrow;", "&downarrow;", "&rightarrow;"]
+  ],
   ru: [
     ["ё", "1", "2", "3", "4", "5", "6", "7", "8", "9", "0", "-", "=", "BackSP"],
-    ["Tab", "й", "ц", "у", "к", "е", "н", "г", "ш", "щ", "з", "х", "ъ", "/"],
+    ["Tab", "й", "ц", "у", "к", "е", "н", "г", "ш", "щ", "з", "х", "ъ", "\\"],
     ["CapsLK", "ф", "ы", "в", "а", "п", "р", "о", "л", "д", "ж", "э", "Enter"],
     ["Shift", "я", "ч", "с", "м", "и", "т", "ь", "б", "ю", ".", "&uparrow;", "Shift"],
+    ["Ctrl", "Win", "Alt", " ", "Ctrl", "Alt", "&leftarrow;", "&downarrow;", "&rightarrow;"]
+  ],
+  ruShift: [
+    ["Ё", "!", '"', "№", ";", "%", ":", "?", "*", "(", ")", "_", "+", "BackSP"],
+    ["Tab", "Й", "Ц", "У", "К", "Е", "Н", "Г", "Ш", "Щ", "З", "Х", "Ъ", "/"],
+    ["CapsLK", "Ф", "Ы", "В", "А", "П", "Р", "О", "Л", "Д", "Ж", "Э", "Enter"],
+    ["Shift", "Я", "Ч", "С", "М", "И", "Т", "Ь", "Б", "Ю", ",", "&uparrow;", "Shift"],
     ["Ctrl", "Win", "Alt", " ", "Ctrl", "Alt", "&leftarrow;", "&downarrow;", "&rightarrow;"]
   ],
 };
@@ -164,6 +178,12 @@ window.addEventListener("keydown", (e) => {
           inputText(key.innerHTML);
         }
         break;
+      case "Shift":
+        if (key.innerHTML === "Shift") {
+          key.classList.add("button-press");
+          shiftPress();
+        }
+        break;
     }
     if (key.innerHTML === codeName) {
       key.classList.add("button-press");
@@ -178,14 +198,21 @@ window.addEventListener("keydown", (e) => {
     keys = document.querySelectorAll(".button-style");
     keysListener();
   }
+
 });
 
-window.addEventListener("keyup", () => {
+window.addEventListener("keyup", (e) => {
   keys.forEach((key) => {
     if (key.classList.contains("button-press")) {
       key.classList.remove("button-press");
     }
   });
+  if (e.key === "Shift") {
+    keyboard.innerHTML = "";
+    createKeyboard(changeLang);
+    keys = document.querySelectorAll(".button-style");
+    keysListener();
+  }
 });
 
 function toCapitalize() {
@@ -203,11 +230,30 @@ function toCapitalize() {
 }
 function keysListener() {
   keys.forEach((el) => {
-  el.addEventListener("click", (e) => {
-    let currentSymb = e.target.innerHTML;
-    inputText(currentSymb);
+    el.addEventListener("mousedown", (e) => {
+      if (el === "Shift") {
+        shiftPress();
+      }else {
+        let currentSymb = e.target.innerHTML;
+        inputText(currentSymb); 
+      }
+    });
+    // el.addEventListener("click", (e) => {
+      
+        
+    el.addEventListener("mouseup", () => {
+      if (el === "Shift") {
+        keyboard.innerHTML = "";
+        createKeyboard(changeLang);
+        keys = document.querySelectorAll(".button-style");
+        keysListener();
+      }
+    });
+      
+    
   });
-});
+  
+// });
 }
   
 function inputText(symb) {
@@ -243,5 +289,18 @@ function inputText(symb) {
     default:
       area.innerHTML += symb;
       break;
+  }
+}
+function shiftPress() {
+  if (changeLang == "en") {
+    keyboard.innerHTML = "";
+    createKeyboard("enShift");
+    keys = document.querySelectorAll(".button-style");
+    keysListener();
+  } else {
+    keyboard.innerHTML = "";
+    createKeyboard("ruShift");
+    keys = document.querySelectorAll(".button-style");
+    keysListener();
   }
 }
