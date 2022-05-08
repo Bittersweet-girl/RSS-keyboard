@@ -28,6 +28,9 @@ const keysArray = {
 };
 
 let changeLang = "en";
+let keys;
+let isCaps = false;
+
 const keyboard = document.createElement("div");
 keyboard.className = "keyboard";
   
@@ -87,11 +90,22 @@ function createKeyboard(lang) {
     }
   }
   document.body.append(keyboard);
+  keys = document.querySelectorAll(".button-style");
 }
-createKeyboard(changeLang);
 
-let isCaps = false;
-let keys = document.querySelectorAll(".button-style");
+function setLocalStorage() {
+  localStorage.setItem("lang", changeLang);
+}
+window.addEventListener("beforeunload", setLocalStorage);
+
+function getLocalStorage() {
+  if (localStorage.getItem("lang")) {
+    const lang = localStorage.getItem("lang");
+    createKeyboard(lang);
+    keysListener();
+  }
+}
+window.addEventListener("load", getLocalStorage);
 
 window.addEventListener("keydown", (e) => {
   let codeName = e.key; 
@@ -158,6 +172,7 @@ window.addEventListener("keydown", (e) => {
   });
   if (e.ctrlKey && e.shiftKey) {
     changeLang == "en" ? changeLang = "ru" : changeLang = "en";
+    localStorage.setItem("lang", changeLang);
     keyboard.innerHTML = "";
     createKeyboard(changeLang);
     keys = document.querySelectorAll(".button-style");
@@ -194,8 +209,6 @@ function keysListener() {
   });
 });
 }
-keysListener();
-
   
 function inputText(symb) {
   const area = document.querySelector(".display-textarea");
