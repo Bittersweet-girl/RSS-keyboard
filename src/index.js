@@ -235,6 +235,7 @@ function buttonListener() {
     });
     if (e.key === "Shift") {
       keyboard.innerHTML = "";
+      changeLang = localStorage.getItem("keyboardLang");
       createKeyboard(changeLang);
       keys = document.querySelectorAll(".button-style");
       isCaps = false;
@@ -275,6 +276,7 @@ function keysListener() {
     el.addEventListener("mouseup", () => {
       if (el.innerHTML === "Shift") {
         keyboard.innerHTML = "";
+        changeLang = localStorage.getItem("keyboardLang");
         createKeyboard(changeLang);
         keys = document.querySelectorAll(".button-style");
         isCaps = false;
@@ -324,7 +326,7 @@ function inputText(symb) {
   area.scrollTop = area.scrollHeight;
 }
 function shiftPress() {
-  if (changeLang == "en") {
+  if (localStorage.getItem("keyboardLang") == "en") {
     keyboard.innerHTML = "";
     createKeyboard("enShift");
     keys = document.querySelectorAll(".button-style");
