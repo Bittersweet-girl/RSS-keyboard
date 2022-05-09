@@ -41,10 +41,10 @@ const keysArray = {
   ],
 };
 
-let changeLang = "en";
+let changeLang;
 let keys;
 let isCaps = false;
-
+const area = document.querySelector(".display-textarea");
 const keyboard = document.createElement("div");
 keyboard.className = "keyboard";
   
@@ -108,17 +108,22 @@ function createKeyboard(lang) {
 }
 
 function setLocalStorage() {
-  localStorage.setItem("lang", changeLang);
+  if ((localStorage.getItem("keyboardLang")) && (localStorage.getItem("keyboardLang") !== undefined)){ 
+    getLocalStorage();
+  }else {
+    changeLang = "en";
+    localStorage.setItem("keyboardLang", changeLang);
+  } 
 }
 window.addEventListener("beforeunload", setLocalStorage);
 
 function getLocalStorage() {
-  if (localStorage.getItem("lang")) {
-    const lang = localStorage.getItem("lang");
+  if (localStorage.getItem("keyboardLang")) {
+    const lang = localStorage.getItem("keyboardLang");
     createKeyboard(lang);
     keysListener();
     buttonListener();
-  }
+  } 
 }
 window.addEventListener("load", getLocalStorage);
 
@@ -145,24 +150,28 @@ function buttonListener() {
           break;
         case "ArrowUp":
           if (key.innerHTML === "↑") {
+            e.preventDefault();
             key.classList.add("button-press");
             inputText(key.innerHTML);
           }
           break;
         case "ArrowLeft":
           if (key.innerHTML === "←") {
+            e.preventDefault();
             key.classList.add("button-press");
             inputText(key.innerHTML);
           }
           break;
         case "ArrowDown":
           if (key.innerHTML === "↓") {
+            e.preventDefault();
             key.classList.add("button-press");
             inputText(key.innerHTML);
           }
           break;
         case "ArrowRight":
           if (key.innerHTML === "→") {
+            e.preventDefault();
             key.classList.add("button-press");
             inputText(key.innerHTML);
           }
@@ -177,6 +186,7 @@ function buttonListener() {
           break;
         case "Tab":
           if (key.innerHTML === "Tab") {
+            e.preventDefault();
             inputText(key.innerHTML);
           }
           break;
@@ -206,7 +216,7 @@ function buttonListener() {
     });
     if (e.ctrlKey && e.shiftKey) {
       changeLang == "en" ? changeLang = "ru" : changeLang = "en";
-      localStorage.setItem("lang", changeLang);
+      localStorage.setItem("keyboardLang", changeLang);
       keyboard.innerHTML = "";
       createKeyboard(changeLang);
       keys = document.querySelectorAll(".button-style");
@@ -249,8 +259,12 @@ function toCapitalize() {
 }
 
 function keysListener() {
+  area.onblur = () => {
+    area.focus();
+  }
   keys.forEach((el) => {
     el.addEventListener("mousedown", (e) => {
+      area.focus();
       if (el.innerHTML === "Shift") {
         shiftPress();
       }else {
@@ -271,7 +285,8 @@ function keysListener() {
 }
   
 function inputText(symb) {
-  const area = document.querySelector(".display-textarea");
+  let { selectionStart } = area;
+  let { selectionEnd } = area;
   switch (symb) {
     case "Ctrl":
       break;
@@ -291,21 +306,22 @@ function inputText(symb) {
     case "Shift":
       break;
     case "Tab":
-      area.innerHTML += "   ";
+      area.setRangeText("   ", selectionStart, selectionEnd, "end");
       break;
     case "BackSP":
-      let cursorPosition = getCurrentPos(area);
-      let someText = area.innerHTML.slice(0, cursorPosition - 1);
-      // + area.innerHTML.slice(cursorPosition, area.innerHTML.length);
-      area.innerHTML = someText;
+      if (selectionStart === selectionEnd) {
+        if (selectionStart > 0) selectionStart -= 1;
+      }
+      area.setRangeText("", selectionStart, selectionEnd, "end");
       break;
     case "Enter":
-      area.innerHTML += "\n";
+      area.setRangeText("\n", selectionStart, selectionEnd, "end");
       break;
     default:
-      area.innerHTML += symb;
+      area.setRangeText(symb, selectionStart, selectionEnd, "end");
       break;
   }
+  area.scrollTop = area.scrollHeight;
 }
 function shiftPress() {
   if (changeLang == "en") {
@@ -333,16 +349,13 @@ function shiftPress() {
   }
 }
 
-function getCurrentPos(obj) {
-  obj.focus();
-  if (obj.selectionStart) return obj.selectionStart;
-  else if (document.selection) {
-    var sel = document.selection.createRange();
-    var clone = sel.duplicate();
-    sel.collapse(true);
-    clone.moveToElementText(obj);
-    clone.setEndPoint("EndToEnd", sel);
-    return clone.text.length;
+function deleteChar() {
+  let { selectionStart }  = area;
+  let { selectionEnd }  = area;
+
+    if (selectionStart === selectionEnd) {
+      if (selectionStart > 0) selectionStart -= 1;
+    }
+    area.setRangeText('', selectionStart, selectionEnd, 'end');
+    area.scrollTop = area.scrollHeight;
   }
-  return 0;
-}
