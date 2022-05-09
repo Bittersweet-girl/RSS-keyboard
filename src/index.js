@@ -22,7 +22,7 @@ const keysArray = {
     ["~", "!", "@", "#", "$", "%", "^", "&", "*", "(", ")", "_", "+", "BackSP"],
     ["Tab", "Q", "W", "E", "R", "T", "Y", "U", "I", "O", "P", "{", "}", "|"],
     ["CapsLK", "A", "S", "D", "F", "G", "H", "J", "K", "L", ":", '"', "Enter"],
-    ["Shift", "Z", "X", "C", "V", "B", "N", "M", "<", ">", "?", "&uparrow;", "Shift"],
+    ["Shift", "Z", "X", "C", "V", "B", "N", "M", "&lt;", "&gt;", "?", "&uparrow;", "Shift"],
     ["Ctrl", "Win", "Alt", " ", "Ctrl", "Alt", "&leftarrow;", "&downarrow;", "&rightarrow;"]
   ],
   ru: [
@@ -124,7 +124,7 @@ window.addEventListener("load", getLocalStorage);
 
 function buttonListener() {
   window.addEventListener("keydown", (e) => {
-    let codeName = e.key; 
+    let codeName = e.key;
     keys.forEach((key) => {
       switch (codeName) {
         case "Control":
@@ -186,6 +186,18 @@ function buttonListener() {
             shiftPress();
           }
           break;
+        case "<":
+          if (key.innerHTML === "&lt;") {
+            key.classList.add("button-press");
+            inputText(key.innerHTML);
+          }
+          break;
+        case ">":
+          if (key.innerHTML === "&gt;") {
+            key.classList.add("button-press");
+            inputText(key.innerHTML);
+          }
+          break;
       }
       if (key.innerHTML === codeName) {
         key.classList.add("button-press");
@@ -235,32 +247,27 @@ function toCapitalize() {
     }
   });
 }
+
 function keysListener() {
   keys.forEach((el) => {
     el.addEventListener("mousedown", (e) => {
-      if (el === "Shift") {
+      if (el.innerHTML === "Shift") {
         shiftPress();
       }else {
         let currentSymb = e.target.innerHTML;
         inputText(currentSymb); 
       }
-    });
-    // el.addEventListener("click", (e) => {
-      
-        
+    });      
     el.addEventListener("mouseup", () => {
-      if (el === "Shift") {
+      if (el.innerHTML === "Shift") {
         keyboard.innerHTML = "";
         createKeyboard(changeLang);
         keys = document.querySelectorAll(".button-style");
+        isCaps = false;
         keysListener();
       }
     });
-      
-    
-  });
-  
-// });
+  });  
 }
   
 function inputText(symb) {
@@ -287,7 +294,9 @@ function inputText(symb) {
       area.innerHTML += "   ";
       break;
     case "BackSP":
-      let someText = area.innerHTML.slice(0, -1);
+      let cursorPosition = getCurrentPos(area);
+      let someText = area.innerHTML.slice(0, cursorPosition - 1);
+      // + area.innerHTML.slice(cursorPosition, area.innerHTML.length);
       area.innerHTML = someText;
       break;
     case "Enter":
@@ -322,4 +331,18 @@ function shiftPress() {
     isCaps = true;
     keysListener();
   }
+}
+
+function getCurrentPos(obj) {
+  obj.focus();
+  if (obj.selectionStart) return obj.selectionStart;
+  else if (document.selection) {
+    var sel = document.selection.createRange();
+    var clone = sel.duplicate();
+    sel.collapse(true);
+    clone.moveToElementText(obj);
+    clone.setEndPoint("EndToEnd", sel);
+    return clone.text.length;
+  }
+  return 0;
 }
