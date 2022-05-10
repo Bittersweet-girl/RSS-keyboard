@@ -1,0 +1,132 @@
+* {
+  margin: 0;
+  padding: 0;
+  -webkit-box-sizing: border-box;
+  box-sizing: border-box;
+}
+.text{
+  margin: 0 auto;
+  position: relative;
+  display: block;
+  width: 500px;
+  height: 100px;
+  text-align: center;
+  padding-top: 20px;
+}
+.display {
+  width: 700px;
+  height: 200px;
+  margin: 10px auto;
+  position: relative;
+}
+.display-textarea{
+  width: 700px;
+  height: 200px;
+  position: relative;
+  padding: 20px 20px;
+  line-height: 30px;
+  letter-spacing: 3px;
+  background-color: rgb(228, 228, 228);
+  -webkit-box-shadow: 5px 5px 30px -10px black;
+  box-shadow: 5px 5px 30px -10px black;
+  border-radius: 5px;
+}
+
+.keyboard {
+  width: 900px;
+  height: 365px;
+  background-color: #5e5e5e8c;
+  position: relative;
+  margin: 20px auto;
+  display: -ms-grid;
+  display: grid;
+  padding: 20px;
+  -ms-grid-rows: 60px 60px 60px 60px 60px;
+  grid-template-rows: 60px 60px 60px 60px 60px;
+  border-radius: 15px;
+}
+
+.button-style {
+  -webkit-box-shadow: 0 0 10px -5px black;
+  box-shadow: 0 0 10px -5px black;
+  background: #3e3e3e;
+  height: 50px;
+  color: white;
+  font-size: 20px;
+  text-align: center;
+  cursor: pointer;
+  border-radius: 5px;
+  line-height: 45px;
+  position: relative;
+  transition: all .3s;
+}
+.button-style:hover{
+  border: 2px solid #f1f1f1;
+  box-shadow: 0px 0px 10px rgba(241, 241, 241, 0.30);
+}
+.button{
+  background: #535353;
+  transition: all .3s;
+}
+.button-style:active,
+.button-style:focus,
+.button-press{
+  background: #f1f1f1;
+  color: #666;
+  box-shadow: 0px 0px 10px rgba(241, 241, 241, 0.30);
+  text-shadow: 1px 0px 0px #333;
+}
+
+.line {
+  display: -ms-grid;
+  display: grid;
+  
+  grid-column-gap: 10px;
+  margin: 9px 0 9px 0;
+}
+
+.line-0 {
+  -ms-grid-columns: 50px 50px 50px 50px 50px 50px 50px 50px 50px 50px 50px 50px 50px 80px;
+  grid-template-columns: 50px 50px 50px 50px 50px 50px 50px 50px 50px 50px 50px 50px 50px 80px;
+}
+
+.line-1 {
+  -ms-grid-columns: 60px 50px 50px 50px 50px 50px 50px 50px 50px 50px 50px 50px 50px 70px;
+  grid-template-columns: 60px 50px 50px 50px 50px 50px 50px 50px 50px 50px 50px 50px 50px 70px;
+}
+.line-2 {
+  -ms-grid-columns: 80px 50px 50px 50px 50px 50px 50px 50px 50px 50px 50px 50px 110px;
+  grid-template-columns: 80px 50px 50px 50px 50px 50px 50px 50px 50px 50px 50px 50px 110px;
+}
+.line-3 {
+  -ms-grid-columns: 125px 50px 50px 50px 50px 50px 50px 50px 50px 50px 50px 50px 65px;
+  grid-template-columns: 125px 50px 50px 50px 50px 50px 50px 50px 50px 50px 50px 50px 65px;
+}
+.line-4 {
+  -ms-grid-columns: 50px 50px 50px auto 50px 50px 60px 50px 60px;
+  grid-template-columns: 50px 50px 50px auto 50px 50px 60px 50px 60px;
+}
+
+.capsLock{
+  font-size: 15px;
+  text-align: left;
+  padding-left: 10px;
+}
+.capsLock .light {
+  width: 5px;
+  height: 5px;
+  position: absolute;
+  border-radius: 50%;
+  top: 5px;
+  right: 5px;
+  background-color: #2e2e2e;
+}
+
+.capsLock-on .light {
+  background-color: gold;
+  -webkit-box-shadow: 0px 0px 5px gold;
+  box-shadow: 0px 0px 5px gold;
+}
+
+
+

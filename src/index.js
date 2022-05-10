@@ -1,0 +1,356 @@
+const text = document.createElement("div");
+text.className = "text";
+text.innerHTML = `<h1>Виртуальная клавиатура</h1>
+    <p>Клавиатура создана в операционной системе Windows<br>
+    Для переключения языка комбинация: ctrl + shift</p>`;
+document.body.append(text);
+
+const display = document.createElement("div");
+display.className = "display";
+display.innerHTML = "<textarea class='display-textarea'></textarea>";
+document.body.append(display);
+
+const keysArray = {
+  en: [
+    ["`", "1", "2", "3", "4", "5", "6", "7", "8", "9", "0", "-", "=", "BackSP"],
+    ["Tab", "q", "w", "e", "r", "t", "y", "u", "i", "o", "p", "[", "]", "\\"],
+    ["CapsLK", "a", "s", "d", "f", "g", "h", "j", "k", "l", ";", "'", "Enter"],
+    ["Shift", "z", "x", "c", "v", "b", "n", "m", ",", ".", "/", "&uparrow;", "Shift"],
+    ["Ctrl", "Win", "Alt", " ", "Ctrl", "Alt", "&leftarrow;", "&downarrow;", "&rightarrow;"],
+  ],
+  enShift: [
+    ["~", "!", "@", "#", "$", "%", "^", "&", "*", "(", ")", "_", "+", "BackSP"],
+    ["Tab", "Q", "W", "E", "R", "T", "Y", "U", "I", "O", "P", "{", "}", "|"],
+    ["CapsLK", "A", "S", "D", "F", "G", "H", "J", "K", "L", ":", "\"", "Enter"],
+    ["Shift", "Z", "X", "C", "V", "B", "N", "M", "&lt;", "&gt;", "?", "&uparrow;", "Shift"],
+    ["Ctrl", "Win", "Alt", " ", "Ctrl", "Alt", "&leftarrow;", "&downarrow;", "&rightarrow;"],
+  ],
+  ru: [
+    ["ё", "1", "2", "3", "4", "5", "6", "7", "8", "9", "0", "-", "=", "BackSP"],
+    ["Tab", "й", "ц", "у", "к", "е", "н", "г", "ш", "щ", "з", "х", "ъ", "\\"],
+    ["CapsLK", "ф", "ы", "в", "а", "п", "р", "о", "л", "д", "ж", "э", "Enter"],
+    ["Shift", "я", "ч", "с", "м", "и", "т", "ь", "б", "ю", ".", "&uparrow;", "Shift"],
+    ["Ctrl", "Win", "Alt", " ", "Ctrl", "Alt", "&leftarrow;", "&downarrow;", "&rightarrow;"],
+  ],
+  ruShift: [
+    ["Ё", "!", "\"", "№", ";", "%", ":", "?", "*", "(", ")", "_", "+", "BackSP"],
+    ["Tab", "Й", "Ц", "У", "К", "Е", "Н", "Г", "Ш", "Щ", "З", "Х", "Ъ", "/"],
+    ["CapsLK", "Ф", "Ы", "В", "А", "П", "Р", "О", "Л", "Д", "Ж", "Э", "Enter"],
+    ["Shift", "Я", "Ч", "С", "М", "И", "Т", "Ь", "Б", "Ю", ",", "&uparrow;", "Shift"],
+    ["Ctrl", "Win", "Alt", " ", "Ctrl", "Alt", "&leftarrow;", "&downarrow;", "&rightarrow;"],
+  ],
+};
+
+let changeLang;
+let keys;
+let isCaps = false;
+const area = document.querySelector(".display-textarea");
+const keyboard = document.createElement("div");
+keyboard.className = "keyboard";
+
+function createKeyboard(lang) {
+  keysArray[lang].forEach((lineElem, lineInd) => {
+    const line = document.createElement("div");
+    line.className = `line-${lineInd} line`;
+    keyboard.append(line);
+    lineElem.forEach((element) => {
+      const btn = document.createElement("span");
+      btn.innerHTML = element;
+      switch (element) {
+        case "BackSP":
+          btn.className = "button-style backspace";
+          break;
+        case "Tab":
+          btn.className = "button-style tab";
+          break;
+        case "CapsLK":
+          btn.className = "button-style capsLock";
+          btn.innerHTML += "<span class=\"light\"></span>";
+          break;
+        case "Enter":
+          btn.className = "button-style enter";
+          break;
+        case "Shift":
+          btn.className = "button-style shift";
+          break;
+        case "&uparrow;":
+          btn.className = "button-style up-arrow";
+          break;
+        case "Ctrl":
+          btn.className = "button-style ctrl";
+          break;
+        case "Win":
+          btn.className = "button-style window";
+          break;
+        case "Alt":
+          btn.className = "button-style alt";
+          break;
+        case "&nbsp;":
+          btn.className = "button-style button space";
+          break;
+        case "&leftarrow;":
+          btn.className = "button-style left-arrow";
+          break;
+        case "&downarrow;":
+          btn.className = "button-style down-arrow";
+          break;
+        case "&rightarrow;":
+          btn.className = "button-style right-arrow";
+          break;
+        default:
+          btn.className = "button-style button";
+      }
+      line.append(btn);
+    });
+  });
+  document.body.append(keyboard);
+  keys = document.querySelectorAll(".button-style");
+}
+
+function toCapitalize() {
+  const symbols = document.querySelectorAll(".button");
+  symbols.forEach((el) => {
+    const symb = el.innerHTML;
+    if (isCaps) {
+      el.innerHTML = "";
+      el.innerHTML = symb.toUpperCase();
+    } else {
+      el.innerHTML = "";
+      el.innerHTML = symb.toLowerCase();
+    }
+  });
+}
+
+function inputText(symb) {
+  let { selectionStart } = area;
+  const { selectionEnd } = area;
+  switch (symb) {
+    case "Ctrl":
+      break;
+    case "Win":
+      break;
+    case "Alt":
+      break;
+    case "CapsLK<span class=\"light\"></span>":
+      keys.forEach((key) => {
+        if (key.innerHTML === "CapsLK<span class=\"light\"></span>") {
+          key.classList.toggle("capsLock-on");
+          isCaps = !isCaps;
+          toCapitalize();
+        }
+      });
+      break;
+    case "Shift":
+      break;
+    case "Tab":
+      area.setRangeText("   ", selectionStart, selectionEnd, "end");
+      break;
+    case "BackSP":
+      if (selectionStart === selectionEnd) {
+        if (selectionStart > 0) selectionStart -= 1;
+      }
+      area.setRangeText("", selectionStart, selectionEnd, "end");
+      break;
+    case "Enter":
+      area.setRangeText("\n", selectionStart, selectionEnd, "end");
+      break;
+    default:
+      area.setRangeText(symb, selectionStart, selectionEnd, "end");
+      break;
+  }
+  area.scrollTop = area.scrollHeight;
+}
+function shiftPress() {
+  if (localStorage.getItem("keyboardLang") === "en") {
+    keyboard.innerHTML = "";
+    createKeyboard("enShift");
+    keys = document.querySelectorAll(".button-style");
+    keys.forEach((key) => {
+      if (key.innerHTML === "Shift") {
+        key.classList.add("button-press");
+      }
+    });
+    isCaps = true;
+    keysListener();
+  } else {
+    keyboard.innerHTML = "";
+    createKeyboard("ruShift");
+    keys = document.querySelectorAll(".button-style");
+    keys.forEach((key) => {
+      if (key.innerHTML === "Shift") {
+        key.classList.add("button-press");
+      }
+    });
+    isCaps = true;
+    keysListener();
+  }
+}
+
+function keysListener() {
+  area.onblur = () => {
+    area.focus();
+  };
+  keys.forEach((el) => {
+    el.addEventListener("mousedown", (e) => {
+      area.focus();
+      if (el.innerHTML === "Shift") {
+        shiftPress();
+      } else {
+        const currentSymb = e.target.innerHTML;
+        inputText(currentSymb);
+      }
+    });
+    el.addEventListener("mouseup", () => {
+      if (el.innerHTML === "Shift") {
+        keyboard.innerHTML = "";
+        changeLang = localStorage.getItem("keyboardLang");
+        createKeyboard(changeLang);
+        keys = document.querySelectorAll(".button-style");
+        isCaps = false;
+        keysListener();
+      }
+    });
+  });
+}
+
+function buttonListener() {
+  window.addEventListener("keydown", (e) => {
+    const codeName = e.key;
+    keys.forEach((key) => {
+      switch (codeName) {
+        case "Control":
+          if (key.innerHTML === "Ctrl") {
+            key.classList.add("button-press");
+          }
+          break;
+        case "Meta":
+          if (key.innerHTML === "Win") {
+            key.classList.add("button-press");
+          }
+          break;
+        case "Backspace":
+          if (key.innerHTML === "BackSP") {
+            key.classList.add("button-press");
+            inputText(key.innerHTML);
+          }
+          break;
+        case "ArrowUp":
+          if (key.innerHTML === "↑") {
+            e.preventDefault();
+            key.classList.add("button-press");
+            inputText(key.innerHTML);
+          }
+          break;
+        case "ArrowLeft":
+          if (key.innerHTML === "←") {
+            e.preventDefault();
+            key.classList.add("button-press");
+            inputText(key.innerHTML);
+          }
+          break;
+        case "ArrowDown":
+          if (key.innerHTML === "↓") {
+            e.preventDefault();
+            key.classList.add("button-press");
+            inputText(key.innerHTML);
+          }
+          break;
+        case "ArrowRight":
+          if (key.innerHTML === "→") {
+            e.preventDefault();
+            key.classList.add("button-press");
+            inputText(key.innerHTML);
+          }
+          break;
+        case "CapsLock":
+          if (key.innerHTML === "CapsLK<span class=\"light\"></span>") {
+            key.classList.add("button-press");
+            key.classList.toggle("capsLock-on");
+            isCaps = !isCaps;
+            toCapitalize();
+          }
+          break;
+        case "Tab":
+          if (key.innerHTML === "Tab") {
+            e.preventDefault();
+            inputText(key.innerHTML);
+          }
+          break;
+        case "Shift":
+          if (key.innerHTML === "Shift") {
+            key.classList.add("button-press");
+            shiftPress();
+          }
+          break;
+        case "<":
+          if (key.innerHTML === "&lt;") {
+            key.classList.add("button-press");
+            inputText(key.innerHTML);
+          }
+          break;
+        case ">":
+          if (key.innerHTML === "&gt;") {
+            key.classList.add("button-press");
+            inputText(key.innerHTML);
+          }
+          break;
+        default:
+          if (key.innerHTML === codeName) {
+            key.classList.add("button-press");
+            inputText(key.innerHTML);
+          }
+          break;
+      }
+    });
+    if (e.ctrlKey && e.shiftKey) {
+      if (changeLang === "en") { changeLang = "ru"; } else { changeLang = "en"; }
+      localStorage.setItem("keyboardLang", changeLang);
+      keyboard.innerHTML = "";
+      createKeyboard(changeLang);
+      keys = document.querySelectorAll(".button-style");
+      keysListener();
+    }
+  });
+
+  window.addEventListener("keyup", (e) => {
+    keys.forEach((key) => {
+      if (key.classList.contains("button-press")) {
+        if (key.innerHTML !== "Shift") {
+          key.classList.remove("button-press");
+        }
+      }
+    });
+    if (e.key === "Shift") {
+      keyboard.innerHTML = "";
+      changeLang = localStorage.getItem("keyboardLang");
+      createKeyboard(changeLang);
+      keys = document.querySelectorAll(".button-style");
+      isCaps = false;
+      keysListener();
+    }
+  });
+}
+
+function getLocalStorage() {
+  if (localStorage.getItem("keyboardLang")) {
+    const lang = localStorage.getItem("keyboardLang");
+    createKeyboard(lang);
+    keysListener();
+    buttonListener();
+  }
+}
+
+function setLocalStorage() {
+  if (
+    localStorage.getItem("keyboardLang")
+    && localStorage.getItem("keyboardLang") !== undefined
+  ) {
+    getLocalStorage();
+  } else {
+    changeLang = "en";
+    localStorage.setItem("keyboardLang", changeLang);
+  }
+}
+window.addEventListener("beforeunload", setLocalStorage);
+
+window.addEventListener("load", getLocalStorage);
